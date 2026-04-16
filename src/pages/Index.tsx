@@ -63,25 +63,27 @@ const Index = () => {
 
   if (showHistory) {
     return (
-      <div className="min-h-screen bg-background p-4 max-w-md mx-auto">
-        <button onClick={() => setShowHistory(false)} className="flex items-center gap-1 text-muted-foreground mb-4">
-          <ArrowLeft size={20} /> Back
-        </button>
-        <h2 className="text-xl font-semibold text-foreground mb-4">Past Entries</h2>
-        {entries.length === 0 ? (
-          <p className="text-muted-foreground text-center mt-12">No entries yet. Start journaling!</p>
-        ) : (
-          <div className="space-y-3">
-            {entries.map((e, i) => (
-              <div key={i} className="bg-card rounded-xl p-4 shadow-sm border border-border">
-                <p className="text-xs text-muted-foreground mb-2">{e.date}</p>
-                <p className="text-sm text-foreground"><span className="font-medium">Practice:</span> {e.practice}</p>
-                <p className="text-sm text-foreground"><span className="font-medium">Mood:</span> {e.mood}</p>
-                <p className="text-sm text-foreground"><span className="font-medium">Grateful for:</span> {e.gratitude}</p>
-              </div>
-            ))}
-          </div>
-        )}
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <button onClick={() => setShowHistory(false)} className="flex items-center gap-1 text-muted-foreground mb-4">
+            <ArrowLeft size={20} /> Back
+          </button>
+          <h2 className="text-xl font-semibold text-foreground mb-4">Past Entries</h2>
+          {entries.length === 0 ? (
+            <p className="text-muted-foreground text-center mt-12">No entries yet. Start journaling!</p>
+          ) : (
+            <div className="space-y-3">
+              {entries.map((e, i) => (
+                <div key={i} className="bg-card rounded-xl p-4 shadow-sm border border-border">
+                  <p className="text-xs text-muted-foreground mb-2">{e.date}</p>
+                  <p className="text-sm text-foreground"><span className="font-medium">Practice:</span> {e.practice}</p>
+                  <p className="text-sm text-foreground"><span className="font-medium">Mood:</span> {e.mood}</p>
+                  <p className="text-sm text-foreground"><span className="font-medium">Grateful for:</span> {e.gratitude}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     );
   }
@@ -109,32 +111,38 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 max-w-md mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-2">
-        <button onClick={reset} className="text-muted-foreground p-1">
-          <ArrowLeft size={22} />
-        </button>
-        <p className="text-sm font-medium text-muted-foreground">MantraCare</p>
-        <button onClick={() => setShowHistory(true)} className="text-muted-foreground p-1">
-          <Clock size={22} />
-        </button>
-      </div>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2">
+          {step === 1 ? (
+            <button onClick={reset} className="text-muted-foreground p-1">
+              <ArrowLeft size={22} />
+            </button>
+          ) : (
+            <button onClick={() => setStep((s) => s - 1)} className="text-muted-foreground p-1">
+              <ArrowLeft size={22} />
+            </button>
+          )}
+          <p className="text-sm font-medium text-muted-foreground">MantraCare</p>
+          <button onClick={() => setShowHistory(true)} className="text-muted-foreground p-1">
+            <Clock size={22} />
+          </button>
+        </div>
 
-      {/* Progress */}
-      <div className="flex gap-2 mb-8">
-        {[1, 2, 3].map((s) => (
-          <div key={s} className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-            <div
-              className={`h-full rounded-full bg-primary transition-all duration-300 ${step >= s ? "w-full" : "w-0"}`}
-            />
-          </div>
-        ))}
-      </div>
+        {/* Progress */}
+        <div className="flex gap-2 mb-8">
+          {[1, 2, 3].map((s) => (
+            <div key={s} className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+              <div
+                className={`h-full rounded-full bg-primary transition-all duration-300 ${step >= s ? "w-full" : "w-0"}`}
+              />
+            </div>
+          ))}
+        </div>
 
-      <div className="bg-card rounded-2xl shadow-sm border border-border p-6">
-        {step === 1 && (
-          <>
+        <div className="bg-card rounded-2xl shadow-sm border border-border p-6 relative overflow-hidden">
+          <div className={`transition-all duration-500 ease-in-out ${step === 1 ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"}`}>
             <h1 className="text-xl font-semibold text-foreground mb-1">How was your practice today?</h1>
             <p className="text-sm text-muted-foreground mb-5">Take a moment to reflect</p>
             <textarea
@@ -149,11 +157,9 @@ const Index = () => {
             >
               Next
             </button>
-          </>
-        )}
+          </div>
 
-        {step === 2 && (
-          <>
+          <div className={`transition-all duration-500 ease-in-out ${step === 2 ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"}`}>
             <h1 className="text-xl font-semibold text-foreground mb-1">How are you feeling right now?</h1>
             <p className="text-sm text-muted-foreground mb-5">Tap the emoji that matches your mood</p>
             <div className="flex justify-between mb-6">
@@ -175,11 +181,9 @@ const Index = () => {
             >
               Next
             </button>
-          </>
-        )}
+          </div>
 
-        {step === 3 && (
-          <>
+          <div className={`transition-all duration-500 ease-in-out ${step === 3 ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"}`}>
             <h1 className="text-xl font-semibold text-foreground mb-1">What's one thing you're grateful for today?</h1>
             <p className="text-sm text-muted-foreground mb-5">It can be anything, big or small</p>
             <textarea
@@ -194,8 +198,8 @@ const Index = () => {
             >
               Submit
             </button>
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );
