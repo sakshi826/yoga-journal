@@ -120,9 +120,7 @@ const Index = () => {
               <ArrowLeft size={22} />
             </button>
           ) : (
-            <button onClick={() => setStep((s) => s - 1)} className="text-muted-foreground p-1">
-              <ArrowLeft size={22} />
-            </button>
+            <div className="w-[30px]" />
           )}
           <p className="text-sm font-medium text-muted-foreground">MantraCare</p>
           <button onClick={() => setShowHistory(true)} className="text-muted-foreground p-1">
