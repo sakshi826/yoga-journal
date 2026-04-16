@@ -123,9 +123,13 @@ const Index = () => {
             <div className="w-[30px]" />
           )}
           <div />
-          <button onClick={() => setShowHistory(true)} className="text-muted-foreground p-1">
-            <Clock size={22} />
-          </button>
+          {step === 1 ? (
+            <button onClick={() => setShowHistory(true)} className="text-muted-foreground p-1">
+              <Clock size={22} />
+            </button>
+          ) : (
+            <div className="w-[30px]" />
+          )}
         </div>
 
         {/* Progress */}
