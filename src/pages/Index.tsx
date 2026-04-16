@@ -122,7 +122,7 @@ const Index = () => {
           ) : (
             <div className="w-[30px]" />
           )}
-          <p className="text-sm font-medium text-muted-foreground">MantraCare</p>
+          <div />
           <button onClick={() => setShowHistory(true)} className="text-muted-foreground p-1">
             <Clock size={22} />
           </button>
