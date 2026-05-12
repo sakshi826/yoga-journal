@@ -1,28 +1,17 @@
-FROM node:20-alpine AS builder
-
+FROM node:20 AS builder
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm ci
-
+RUN npm install
 COPY . .
-
 RUN npm run build
 
-FROM node:20-alpine
-
+FROM node:20
 WORKDIR /app
-
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server.cjs ./
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.env ./
-
-RUN npm ci --only=production
-
+RUN npm install --production
 EXPOSE 80
-
 ENV NODE_ENV=production
 ENV PORT=80
-
 CMD ["node", "server.cjs"]
