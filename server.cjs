@@ -7,6 +7,8 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3001;
 
+
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -16,6 +18,11 @@ const pool = new Pool({
 
 app.use(cors());
 app.use(express.json());
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 // User initialization
 app.post('/api/users/init', async (req, res) => {
@@ -70,6 +77,9 @@ app.post('/api/entries', async (req, res) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
+  app.get('/', (req, res) => {
+    res.redirect('/yoga-journal/');
+  });
   app.use('/yoga-journal', express.static(path.join(__dirname, 'dist')));
   app.get('/yoga-journal/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
