@@ -13,7 +13,7 @@ interface Entry {
   practice: string;
   mood: string;
   gratitude: string;
-  date: string;
+  created_at: string;
 }
 
 const Index = () => {
@@ -24,10 +24,25 @@ const Index = () => {
   const [submitted, setSubmitted] = useState(false);
   const [countdown, setCountdown] = useState(6);
   const [showHistory, setShowHistory] = useState(false);
-  const [entries, setEntries] = useState<Entry[]>(() => {
-    const saved = localStorage.getItem("yoga-journal-entries");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const userId = sessionStorage.getItem("user_id");
+
+  const fetchEntries = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const res = await fetch(`/api/entries?user_id=${userId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setEntries(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch entries:", err);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [fetchEntries]);
 
   const reset = useCallback(() => {
     setStep(1);
@@ -38,17 +53,29 @@ const Index = () => {
     setCountdown(6);
   }, []);
 
-  const handleSubmit = () => {
-    const entry: Entry = {
+  const handleSubmit = async () => {
+    if (!userId) return;
+    const entryData = {
+      user_id: userId,
       practice,
       mood,
       gratitude,
-      date: new Date().toLocaleString(),
     };
-    const updated = [entry, ...entries];
-    setEntries(updated);
-    localStorage.setItem("yoga-journal-entries", JSON.stringify(updated));
-    setSubmitted(true);
+
+    try {
+      const res = await fetch("/api/entries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entryData),
+      });
+
+      if (res.ok) {
+        await fetchEntries();
+        setSubmitted(true);
+      }
+    } catch (err) {
+      console.error("Failed to save entry:", err);
+    }
   };
 
   useEffect(() => {
@@ -75,7 +102,9 @@ const Index = () => {
             <div className="space-y-3">
               {entries.map((e, i) => (
                 <div key={i} className="bg-card rounded-xl p-4 shadow-sm border border-border">
-                  <p className="text-xs text-muted-foreground mb-2">{e.date}</p>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    {new Date(e.created_at).toLocaleString()}
+                  </p>
                   <p className="text-sm text-foreground"><span className="font-medium">Practice:</span> {e.practice}</p>
                   <p className="text-sm text-foreground"><span className="font-medium">Mood:</span> {e.mood}</p>
                   <p className="text-sm text-foreground"><span className="font-medium">Grateful for:</span> {e.gratitude}</p>
