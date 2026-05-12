@@ -26,4 +26,5 @@ jobs:
           push: true
           platforms: linux/amd64
           provenance: false
+          sbom: false
           tags: bunker.mantracare.com/lovable/yoga-journal:1.0
